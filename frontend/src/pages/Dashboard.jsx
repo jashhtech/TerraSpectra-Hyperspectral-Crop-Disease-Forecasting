@@ -1,31 +1,24 @@
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import MapView from "../components/MapView";
 
 function Dashboard() {
   return (
     <div>
       <Navbar />
 
-      <div style={{ display: "flex", gap: "30px" }}>
+      <div style={{ display: "flex", gap: "25px" }}>
         <Sidebar />
 
-        <main>
-          <h1>Farm Monitoring Dashboard</h1>
+        <main style={{ flex: 1, padding: "20px" }}>
+          <h1>TerraSpectra Dashboard</h1>
 
-          <h3>Crop Health Overview</h3>
-          <p>Monitor crop health using hyperspectral imagery.</p>
+          <h3>GIS Crop Monitoring Map</h3>
 
-          <h3>GIS Map</h3>
-          <div style={{
-            height: "300px",
-            background: "#e5e7eb",
-            padding: "20px"
-          }}>
-            Map will be displayed here.
-          </div>
+          <MapView />
 
-          <h3>Disease Predictions</h3>
-          <p>Prediction results will appear here.</p>
+          <h3>Disease Prediction</h3>
+          <p>Sample disease overlay displayed on the map.</p>
         </main>
       </div>
     </div>
