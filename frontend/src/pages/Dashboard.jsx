@@ -1,8 +1,24 @@
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import MapView from "../components/MapView";
+import { getHealth } from "../services/api";
 
 function Dashboard() {
+  const [status, setStatus] = useState("Loading...");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getHealth()
+      .then((data) => {
+        setStatus(data.status);
+      })
+      .catch(() => {
+        setError("Unable to connect to API");
+        setStatus("Offline");
+      });
+  }, []);
+
   return (
     <div>
       <Navbar />
@@ -13,12 +29,12 @@ function Dashboard() {
         <main style={{ flex: 1, padding: "20px" }}>
           <h1>TerraSpectra Dashboard</h1>
 
-          <h3>GIS Crop Monitoring Map</h3>
+          <h3>Backend API Status: {status}</h3>
 
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <h3>GIS Map</h3>
           <MapView />
-
-          <h3>Disease Prediction</h3>
-          <p>Sample disease overlay displayed on the map.</p>
         </main>
       </div>
     </div>
