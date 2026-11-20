@@ -28,11 +28,11 @@ const sampleData = {
 function MapView() {
   const layers = [
     new GeoJsonLayer({
-      id: "disease-overlay",
+      id: "disease-layer",
       data: sampleData,
       filled: true,
       stroked: true,
-      getFillColor: [255, 0, 0, 110],
+      getFillColor: [255, 0, 0, 120],
       getLineColor: [200, 0, 0],
       lineWidthMinPixels: 2
     })
@@ -45,7 +45,7 @@ function MapView() {
           longitude: 83.30,
           latitude: 17.72,
           zoom: 13,
-          pitch: 30,
+          pitch: 0,
           bearing: 0
         }}
         controller={true}
