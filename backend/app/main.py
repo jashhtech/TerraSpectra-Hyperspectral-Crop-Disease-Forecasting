@@ -1,12 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import PROJECT_NAME, API_VERSION, DESCRIPTION
-
 app = FastAPI(
-    title=PROJECT_NAME,
-    version=API_VERSION,
-    description=DESCRIPTION
+    title="TerraSpectra API",
+    version="1.0.0"
 )
 
 app.add_middleware(
@@ -14,14 +11,12 @@ app.add_middleware(
     allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 @app.get("/")
 def home():
-    return {
-        "message": "Welcome to TerraSpectra API"
-    }
+    return {"message": "Welcome to TerraSpectra API"}
 
 @app.get("/health")
 def health():
