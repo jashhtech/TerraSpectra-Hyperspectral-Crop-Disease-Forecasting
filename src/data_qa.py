@@ -3,11 +3,16 @@ import numpy as np
 import pandas as pd
 
 
+def _clean_labels(labels):
+    """Flatten labels and remove missing values."""
+    labels = np.asarray(labels).ravel()
+    return labels[pd.notna(labels)]
+
+
 def class_balance_report(labels, split_name="Dataset"):
     """Report class counts and percentages for a dataset split."""
 
-    labels = np.asarray(labels).ravel()
-    labels = labels[pd.notna(labels)]
+    labels = _clean_labels(labels)
 
     if len(labels) == 0:
         raise ValueError("No valid labels available.")
@@ -26,17 +31,20 @@ def class_balance_report(labels, split_name="Dataset"):
 
 
 def split_summary(y_train, y_val, y_test):
-    """Compare sample counts and class distribution across splits."""
+    """Compare valid sample counts and class distribution across splits."""
 
     splits = {
-        "Train": np.asarray(y_train).ravel(),
-        "Validation": np.asarray(y_val).ravel(),
-        "Test": np.asarray(y_test).ravel()
+        "Train": _clean_labels(y_train),
+        "Validation": _clean_labels(y_val),
+        "Test": _clean_labels(y_test)
     }
 
     all_labels = np.concatenate(list(splits.values()))
-    classes = sorted(pd.unique(all_labels))
 
+    if len(all_labels) == 0:
+        raise ValueError("No valid labels available in any split.")
+
+    classes = sorted(pd.unique(all_labels), key=str)
     summary = {}
 
     for name, labels in splits.items():
@@ -51,9 +59,9 @@ def split_summary(y_train, y_val, y_test):
 
     report = pd.DataFrame(summary).fillna(0)
 
-    print("\nSplit sizes:")
+    print("\nValid split sizes:")
     for name, labels in splits.items():
-        print(f"{name}: {len(labels)} samples")
+        print(f"{name}: {len(labels)} valid samples")
 
     print("\nClass distribution (%):")
     print(report)
