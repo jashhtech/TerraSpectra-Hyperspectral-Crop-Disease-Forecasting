@@ -3,6 +3,7 @@ import { GeoJsonLayer } from "@deck.gl/layers";
 import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 
+// Sample disease data
 const sampleData = {
   type: "FeatureCollection",
   features: [
@@ -21,19 +22,56 @@ const sampleData = {
           [83.29, 17.71]
         ]]
       }
+    },
+    {
+      type: "Feature",
+      properties: {
+        disease: "Leaf Spot"
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [83.32, 17.71],
+          [83.34, 17.71],
+          [83.34, 17.73],
+          [83.32, 17.73],
+          [83.32, 17.71]
+        ]]
+      }
     }
   ]
 };
 
+// Disease map layers
 function MapView() {
   const layers = [
     new GeoJsonLayer({
-      id: "disease-layer",
-      data: sampleData,
+      id: "fungal-blight",
+      data: {
+        ...sampleData,
+        features: sampleData.features.filter(
+          (f) => f.properties.disease === "Fungal Blight"
+        )
+      },
       filled: true,
       stroked: true,
       getFillColor: [255, 0, 0, 120],
       getLineColor: [200, 0, 0],
+      lineWidthMinPixels: 2
+    }),
+
+    new GeoJsonLayer({
+      id: "leaf-spot",
+      data: {
+        ...sampleData,
+        features: sampleData.features.filter(
+          (f) => f.properties.disease === "Leaf Spot"
+        )
+      },
+      filled: true,
+      stroked: true,
+      getFillColor: [255, 200, 0, 120],
+      getLineColor: [200, 150, 0],
       lineWidthMinPixels: 2
     })
   ];
