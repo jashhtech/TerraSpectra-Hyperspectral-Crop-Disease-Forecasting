@@ -1,6 +1,7 @@
-
 import numpy as np
 import pytest
+import matplotlib
+matplotlib.use("Agg")
 
 from src.eda_utils import (
     _validate_cube,
@@ -11,11 +12,12 @@ from src.eda_utils import (
     run_pca,
     plot_band,
     plot_spectral_signature,
+    evaluate_predictions,
 )
 
 
 def test_scaler_uses_training_data_only():
-    train = np.random.rand(10, 8, 8, 5)[0]
+    train = np.random.rand(8, 8, 5)
     validation = np.random.rand(8, 8, 5) + 10
 
     scaler = fit_scaler(train)
@@ -28,7 +30,6 @@ def test_scaler_uses_training_data_only():
 
 def test_pca_output_shape():
     cube = np.random.rand(8, 8, 5)
-
     pca, scaler = fit_pca(cube, n_components=3)
     result = transform_pca(cube, pca, scaler)
 
@@ -55,7 +56,6 @@ def test_scaler_rejects_all_invalid_pixels():
 def test_transform_rejects_band_mismatch():
     train = np.random.rand(8, 8, 5)
     other = np.random.rand(8, 8, 4)
-
     scaler = fit_scaler(train)
 
     with pytest.raises(ValueError):
@@ -104,3 +104,33 @@ def test_spectral_signature_rejects_wrong_wavelength_count():
         plot_spectral_signature(
             cube, row=0, col=0, wavelengths=[400, 500]
         )
+
+
+def test_evaluate_predictions_returns_confusion_matrix():
+    y_true = [0, 1, 1, 0, 1, 0]
+    y_pred = [0, 1, 0, 0, 1, 1]
+
+    cm = evaluate_predictions(y_true, y_pred, labels=[0, 1])
+
+    expected = np.array([[2, 1], [1, 2]])
+    np.testing.assert_array_equal(cm, expected)
+
+
+def test_evaluate_predictions_supports_multiple_classes():
+    y_true = [0, 1, 2, 0, 1, 2]
+    y_pred = [0, 1, 1, 0, 2, 2]
+
+    cm = evaluate_predictions(y_true, y_pred, labels=[0, 1, 2])
+
+    assert cm.shape == (3, 3)
+    assert cm.sum() == len(y_true)
+
+
+def test_evaluate_predictions_handles_missing_predicted_class():
+    y_true = [0, 0, 1, 1]
+    y_pred = [0, 0, 0, 0]
+
+    cm = evaluate_predictions(y_true, y_pred, labels=[0, 1])
+
+    assert cm.shape == (2, 2)
+    assert cm[1, 1] == 0
