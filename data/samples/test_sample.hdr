@@ -1,0 +1,6 @@
+ENVI
+samples = 64
+lines = 64
+bands = 6
+data type = 4
+interleave = bsq
