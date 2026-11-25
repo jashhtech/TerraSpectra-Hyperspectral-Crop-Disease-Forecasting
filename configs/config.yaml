@@ -20,4 +20,7 @@ training:
   validation_split: 0.2
   random_seed: 42
 
-
+data:
+  file: data/train_data.npz
+  test_file: data/test_data.npz
+  
